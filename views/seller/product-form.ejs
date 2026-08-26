@@ -1,0 +1,84 @@
+<%- include('../partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrow">
+    <div class="auth-card">
+      <h1><%= title %></h1>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form action="<%= formAction %>" method="post" class="product-form-grid" enctype="multipart/form-data">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <label class="span-2">Photos
+          <div class="photo-upload" id="photoUpload" data-existing="<%= existingImages ? existingImages.length : 0 %>" data-max="<%= maxImages || 3 %>">
+            <% if (existingImages && existingImages.length) { %>
+              <div class="existing-photos">
+                <% existingImages.forEach(function(img){ %>
+                  <div class="existing-photo">
+                    <img src="<%= img.image_path %>" alt="" />
+                    <button type="submit" form="delete-img-<%= img.id %>" class="remove-photo" title="Remove photo">&times;</button>
+                  </div>
+                <% }) %>
+              </div>
+            <% } %>
+            <div class="existing-photos" id="newPhotoPreviews"></div>
+            <label class="upload-btn" for="photoInput" id="uploadBtnLabel">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Add pictures
+            </label>
+            <input type="file" id="photoInput" name="photos" accept="image/png,image/jpeg,image/webp" multiple hidden />
+            <span id="photoPreviewCount" class="muted small"></span>
+            <span class="hint">Choose photos from your device, up to <%= maxImages || 3 %> per listing. You'll see them here before saving. JPG, PNG, or WEBP, 5MB max each.</span>
+          </div>
+        </label>
+
+        <label>Brand
+          <input type="text" name="brand" value="<%= product.brand || '' %>" placeholder="e.g. Apple" required />
+        </label>
+        <label>Model
+          <input type="text" name="model" value="<%= product.model || '' %>" placeholder="e.g. iPhone 15" required />
+        </label>
+        <label>Price (DA)
+          <input type="number" step="1" min="1" name="price" value="<%= product.price || '' %>" required />
+        </label>
+        <label>Discount %
+          <input type="number" min="0" max="90" name="discount_pct" value="<%= product.discount_pct || 0 %>" />
+        </label>
+        <label>Quantity available
+          <input type="number" min="1" name="quantity" value="<%= product.quantity || 1 %>" required />
+        </label>
+        <label>Condition
+          <select name="condition">
+            <option value="new" <%= product.condition === 'new' ? 'selected' : '' %>>New</option>
+            <option value="used" <%= product.condition === 'used' ? 'selected' : '' %>>Used</option>
+            <option value="refurbished" <%= product.condition === 'refurbished' ? 'selected' : '' %>>Refurbished</option>
+          </select>
+        </label>
+        <label>Storage (GB)
+          <input type="number" min="0" name="storage_gb" value="<%= product.storage_gb || '' %>" />
+        </label>
+        <label>Color
+          <input type="text" name="color" value="<%= product.color || '' %>" />
+        </label>
+        <label class="span-2">Contact phone number <span class="muted small">(shown publicly on this listing)</span>
+          <input type="tel" name="contact_phone" value="<%= product.contact_phone || '' %>" placeholder="0555 12 34 56" required />
+        </label>
+        <label class="span-2">Description
+          <textarea name="description" rows="4" placeholder="Condition details, accessories included, reason for selling..."><%= product.description || '' %></textarea>
+        </label>
+        <div class="span-2">
+          <button class="btn btn-primary" type="submit">Save listing</button>
+        </div>
+      </form>
+
+      <% if (existingImages && existingImages.length) { %>
+        <% existingImages.forEach(function(img){ %>
+          <form id="delete-img-<%= img.id %>" action="/seller/products/<%= product.id %>/images/<%= img.id %>/delete" method="post" style="display:none;">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          </form>
+        <% }) %>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

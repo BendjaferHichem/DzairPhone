@@ -1,0 +1,32 @@
+<%- include('partials/header', { active: 'products' }) %>
+
+<h1>Listings</h1>
+<div class="table-list">
+  <% products.forEach(function(p){ %>
+    <div class="table-row admin-listing-row">
+      <img class="row-thumb" src="<%= p.primary_image || 'https://placehold.co/80x80' %>" alt="" />
+      <span><%= p.brand %> <%= p.model %></span>
+      <span class="muted"><%= p.store_name %> (<%= p.seller_email %>)</span>
+      <strong><%= p.price_dzd.toLocaleString('en-US') %> DA</strong>
+      <% if (p.admin_disabled) { %>
+        <span class="status-pill status-cancelled">Removed by admin</span>
+      <% } else if (p.is_sold) { %>
+        <span class="status-pill status-both">Sold</span>
+      <% } else if (!p.is_active) { %>
+        <span class="status-pill status-seller">Hidden by seller</span>
+      <% } else { %>
+        <span class="status-pill status-buyer">Live</span>
+      <% } %>
+      <div class="row-actions">
+        <a class="btn btn-outline btn-sm" href="<%= ADMIN_PATH %>/products/<%= p.id %>">View</a>
+        <form action="<%= ADMIN_PATH %>/products/<%= p.id %>/toggle" method="post" onsubmit="return confirm('<%= p.admin_disabled ? 'Restore' : 'Remove' %> this listing?');">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button class="<%= p.admin_disabled ? 'btn btn-outline btn-sm' : 'link-danger' %>" type="submit"><%= p.admin_disabled ? 'Restore' : 'Remove' %></button>
+        </form>
+      </div>
+    </div>
+  <% }) %>
+  <% if (products.length === 0) { %><p class="muted">No listings yet.</p><% } %>
+</div>
+
+<%- include('partials/footer') %>

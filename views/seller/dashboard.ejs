@@ -1,0 +1,79 @@
+<%- include('../partials/header') %>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="dash-head">
+      <div>
+        <h1><%= store.name %></h1>
+        <% if (store.phone) { %><p class="muted">📞 <%= store.phone %></p><% } %>
+        <p class="muted"><%= store.description %></p>
+      </div>
+      <div class="dash-head-actions">
+        <a class="btn btn-outline" href="/seller/store">Edit store</a>
+        <a class="btn btn-primary" href="/seller/products/new">+ Add phone</a>
+      </div>
+    </div>
+
+    <div class="stat-cards">
+      <div class="stat-card"><span>Active listings</span><strong><%= products.filter(p => p.is_active && !p.admin_disabled && !p.is_sold).length %></strong></div>
+      <div class="stat-card"><span>Sold</span><strong><%= products.filter(p => p.is_sold).length %></strong></div>
+      <div class="stat-card"><span>Hidden by you</span><strong><%= products.filter(p => !p.is_active && !p.admin_disabled && !p.is_sold).length %></strong></div>
+      <div class="stat-card"><span>Removed by admin</span><strong><%= products.filter(p => p.admin_disabled).length %></strong></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Your listings</h2>
+    </div>
+
+    <% if (products.length === 0) { %>
+      <div class="empty-state">
+        <p>You haven't listed any phones yet.</p>
+        <a class="btn btn-primary" href="/seller/products/new">Add your first phone</a>
+      </div>
+    <% } else { %>
+      <div class="table-list">
+        <% products.forEach(function(p){ %>
+          <div class="table-row seller-row">
+            <img class="row-thumb" src="<%= p.image %>" alt="" />
+            <span>
+              <%= p.brand %> <%= p.model %>
+              <% if (p.admin_disabled) { %> <span class="status-pill status-cancelled">Removed by admin</span>
+              <% } else if (p.is_sold) { %> <span class="status-pill status-both">Sold</span>
+              <% } else if (!p.is_active) { %> <span class="status-pill status-seller">Hidden by you</span>
+              <% } %>
+            </span>
+            <span class="muted"><%= p.quantity %> in stock</span>
+            <strong><%= p.final_price_fmt %> DA</strong>
+            <div class="row-actions">
+              <a class="btn btn-outline btn-sm" href="/seller/products/<%= p.id %>/edit">Edit</a>
+              <% if (p.admin_disabled) { %>
+                <span class="muted small" title="Only an administrator can restore this listing">Locked by admin</span>
+              <% } else if (p.is_sold) { %>
+                <form action="/seller/products/<%= p.id %>/relist" method="post">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="btn btn-outline btn-sm" type="submit">Relist</button>
+                </form>
+              <% } else if (p.is_active) { %>
+                <form action="/seller/products/<%= p.id %>/mark-sold" method="post" onsubmit="return confirm('Mark this listing as sold? It will stop showing on the site.');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="btn btn-outline btn-sm" type="submit">Mark as sold</button>
+                </form>
+                <form action="/seller/products/<%= p.id %>/delete" method="post" onsubmit="return confirm('Hide this listing?');">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="link-danger" type="submit">Hide</button>
+                </form>
+              <% } else { %>
+                <form action="/seller/products/<%= p.id %>/restore" method="post">
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                  <button class="btn btn-outline btn-sm" type="submit">Restore</button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

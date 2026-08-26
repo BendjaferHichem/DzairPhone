@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · PhoneMarket Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="admin-body">
+<div class="admin-shell">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">Dzair<span>Phone</span><em>Admin</em></div>
+    <nav>
+      <a href="<%= ADMIN_PATH %>" class="<%= active === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+      <a href="<%= ADMIN_PATH %>/users" class="<%= active === 'users' ? 'active' : '' %>">Users</a>
+      <a href="<%= ADMIN_PATH %>/stores" class="<%= active === 'stores' ? 'active' : '' %>">Stores</a>
+      <a href="<%= ADMIN_PATH %>/products" class="<%= active === 'products' ? 'active' : '' %>">Listings</a>
+      <a href="<%= ADMIN_PATH %>/orders" class="<%= active === 'orders' ? 'active' : '' %>">Orders</a>
+    </nav>
+    <div class="admin-sidebar-foot">
+      <span>Logged in as <%= user.email %></span>
+      <form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button class="link-danger" type="submit">Log out</button>
+      </form>
+      <a class="muted small" href="/">← Back to site</a>
+    </div>
+  </aside>
+  <main class="admin-main">

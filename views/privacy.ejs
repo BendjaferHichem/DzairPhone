@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrow">
+    <h1><%= t('privacy_title') %></h1>
+    <div class="prose">
+      <p class="muted">Last updated <%= new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long' }) %></p>
+
+      <h2>What we collect</h2>
+      <p>When you create an account, we store your name, email address, and a securely hashed version of your password (we never store your password itself). If you list a phone for sale, we store the listing details you provide, including any contact phone number and photos you upload.</p>
+
+      <h2>How contact information is used</h2>
+      <p>DzairPhone connects buyers and sellers directly. When you list a phone, the contact phone number you provide is shown publicly on that listing so interested buyers can call or message you, including people who are not logged in. Please only list a number you're comfortable sharing publicly.</p>
+
+      <h2>Guest browsing</h2>
+      <p>You do not need an account to browse listings or contact a seller. We do not track guest visitors beyond standard, temporary server logs used for security (like rate-limiting abusive requests).</p>
+
+      <h2>Cookies</h2>
+      <p>We use a small number of cookies: one to keep you logged in (if you have an account), one to remember your chosen language, and one for basic security (CSRF protection). We don't use advertising or third-party tracking cookies.</p>
+
+      <h2>Data retention</h2>
+      <p>Your account and listing data is kept as long as your account is active. You can ask to have your account and listings removed at any time.</p>
+
+      <h2>Contact</h2>
+      <p>This is a starting version of our privacy policy and will be expanded as the platform grows. Questions can be directed to the site administrator.</p>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

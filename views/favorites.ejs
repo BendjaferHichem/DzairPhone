@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner">
+    <h1>Saved listings</h1>
+
+    <% if (active.length === 0 && unavailable.length === 0) { %>
+      <div class="empty-state">
+        <p>You haven't saved any listings yet.</p>
+        <a class="btn btn-primary" href="/products">Browse phones</a>
+      </div>
+    <% } else { %>
+      <% if (active.length) { %>
+        <div class="product-grid">
+          <% active.forEach(function(p){ %><%- include('partials/product-card', { p }) %><% }) %>
+        </div>
+      <% } %>
+      <% if (unavailable.length) { %>
+        <div class="section-head" style="margin-top:2.5rem;">
+          <h2>No longer available</h2>
+        </div>
+        <p class="muted small">These were saved earlier but have since been sold, hidden, or removed.</p>
+        <div class="table-list" style="margin-top:1rem;">
+          <% unavailable.forEach(function(p){ %>
+            <div class="table-row">
+              <span><%= p.brand %> <%= p.model %></span>
+              <span class="muted small"><%= p.is_sold ? 'Sold' : (p.admin_disabled ? 'Removed' : 'Hidden by seller') %></span>
+              <form action="/favorites/<%= p.id %>/toggle" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button class="link-danger" type="submit">Remove</button>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

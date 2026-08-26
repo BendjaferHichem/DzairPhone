@@ -1,0 +1,63 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrowest">
+    <div class="auth-card reveal">
+      <h1>Verify your email</h1>
+      <p class="muted">We sent a 6-digit code to <strong><%= email %></strong>. Enter it below to finish creating your account.</p>
+
+      <% if (devCode) { %>
+        <div class="alert alert-dev">
+          <strong>Dev mode:</strong> no email server is configured yet, so here's your code directly: <strong style="letter-spacing:2px;"><%= devCode %></strong>
+        </div>
+      <% } %>
+
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+
+      <form action="/register/verify" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label>Verification code
+          <input type="text" name="code" id="codeInput" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" class="code-input" required autofocus />
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">Verify and create account</button>
+      </form>
+
+      <form action="/register/resend" method="post" class="resend-form" id="resendForm">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button class="link-resend" type="submit" id="resendBtn">Resend code</button>
+      </form>
+
+      <p class="auth-switch"><a href="/register">Use a different email</a></p>
+    </div>
+  </div>
+</section>
+
+<script nonce="<%= cspNonce %>">
+  (function () {
+    var input = document.getElementById('codeInput');
+    if (input) {
+      input.addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 6);
+      });
+    }
+    var cooldown = <%= cooldownMs || 0 %>;
+    var resendBtn = document.getElementById('resendBtn');
+    if (resendBtn && cooldown > 0) {
+      var secondsLeft = Math.ceil(cooldown / 1000);
+      resendBtn.disabled = true;
+      var label = resendBtn.textContent;
+      var tick = setInterval(function () {
+        secondsLeft -= 1;
+        if (secondsLeft <= 0) {
+          clearInterval(tick);
+          resendBtn.disabled = false;
+          resendBtn.textContent = label;
+        } else {
+          resendBtn.textContent = 'Resend code (' + secondsLeft + 's)';
+        }
+      }, 1000);
+    }
+  })();
+</script>
+
+<%- include('partials/footer') %>

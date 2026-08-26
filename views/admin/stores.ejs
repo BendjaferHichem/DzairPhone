@@ -1,0 +1,20 @@
+<%- include('partials/header', { active: 'stores' }) %>
+
+<h1>Stores</h1>
+<div class="table-list">
+  <% stores.forEach(function(s){ %>
+    <div class="table-row admin-user-row">
+      <span><%= s.name %></span>
+      <span class="muted"><%= s.owner_email %></span>
+      <span class="muted small"><%= s.product_count %> active listings <% if (s.phone) { %>· 📞 <%= s.phone %><% } %></span>
+      <span><%= s.is_active ? 'Active' : 'Suspended' %></span>
+      <form action="<%= ADMIN_PATH %>/stores/<%= s.id %>/toggle" method="post" onsubmit="return confirm('<%= s.is_active ? 'Suspend' : 'Reactivate' %> this store?');">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button class="<%= s.is_active ? 'link-danger' : 'btn btn-outline btn-sm' %>" type="submit"><%= s.is_active ? 'Suspend' : 'Reactivate' %></button>
+      </form>
+    </div>
+  <% }) %>
+  <% if (stores.length === 0) { %><p class="muted">No stores yet.</p><% } %>
+</div>
+
+<%- include('partials/footer') %>

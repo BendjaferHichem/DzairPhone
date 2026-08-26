@@ -1,0 +1,10 @@
+node_modules/
+.env
+db/*.sqlite3
+db/*.sqlite3-journal
+db/*.sqlite3-wal
+db/*.sqlite3-shm
+ADMIN_CREDENTIALS.txt
+npm-debug.log*
+public/uploads/products/*
+!public/uploads/products/.gitkeep

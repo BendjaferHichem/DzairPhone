@@ -1,0 +1,76 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-head">
+      <h1><%= t('browse_title') %></h1>
+    </div>
+
+    <% if (storeInfo) { %>
+      <div class="alert alert-dev" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <span>Showing listings from <strong><%= storeInfo.name %></strong></span>
+        <a class="link-resend" href="/products">Clear</a>
+      </div>
+    <% } %>
+
+    <form class="filter-bar" method="get" action="/products">
+      <input type="text" name="q" placeholder="<%= t('filter_search') %>" value="<%= filters.q %>" />
+      <select name="brand">
+        <option value=""><%= t('filter_all_brands') %></option>
+        <% brands.forEach(function(b){ %>
+          <option value="<%= b %>" <%= filters.brand === b ? 'selected' : '' %>><%= b %></option>
+        <% }) %>
+      </select>
+      <select name="condition">
+        <option value=""><%= t('filter_any_condition') %></option>
+        <option value="new" <%= filters.condition === 'new' ? 'selected' : '' %>><%= t('filter_new') %></option>
+        <option value="used" <%= filters.condition === 'used' ? 'selected' : '' %>><%= t('filter_used') %></option>
+        <option value="refurbished" <%= filters.condition === 'refurbished' ? 'selected' : '' %>><%= t('filter_refurbished') %></option>
+      </select>
+      <input type="number" name="min_price" placeholder="Min DA" min="0" value="<%= filters.min_price %>" class="price-input" />
+      <input type="number" name="max_price" placeholder="Max DA" min="0" value="<%= filters.max_price %>" class="price-input" />
+      <select name="sort">
+        <option value=""><%= t('filter_sort_newest') %></option>
+        <option value="price_asc" <%= filters.sort === 'price_asc' ? 'selected' : '' %>><%= t('filter_sort_price_asc') %></option>
+        <option value="price_desc" <%= filters.sort === 'price_desc' ? 'selected' : '' %>><%= t('filter_sort_price_desc') %></option>
+      </select>
+      <% if (filters.store) { %><input type="hidden" name="store" value="<%= filters.store %>" /><% } %>
+      <button class="btn btn-primary" type="submit"><%= t('filter_apply') %></button>
+    </form>
+
+    <% if (products.length === 0) { %>
+      <div class="empty-state">
+        <p><%= t('no_results') %></p>
+        <a class="btn btn-outline" href="/products"><%= t('clear_filters') %></a>
+      </div>
+    <% } else { %>
+      <p class="result-count"><%= pagination.totalCount %> <%= t('results_count') %></p>
+      <div class="product-grid">
+        <% products.forEach(function(p){ %><%- include('partials/product-card', { p }) %><% }) %>
+      </div>
+
+      <% if (pagination.totalPages > 1) {
+        function pageUrl(n) {
+          var params = new URLSearchParams();
+          if (filters.q) params.set('q', filters.q);
+          if (filters.brand) params.set('brand', filters.brand);
+          if (filters.condition) params.set('condition', filters.condition);
+          if (filters.sort) params.set('sort', filters.sort);
+          if (filters.min_price) params.set('min_price', filters.min_price);
+          if (filters.max_price) params.set('max_price', filters.max_price);
+          if (filters.store) params.set('store', filters.store);
+          params.set('page', n);
+          return '/products?' + params.toString();
+        }
+      %>
+      <nav class="pagination" aria-label="Pagination">
+        <a class="btn btn-outline btn-sm <%= pagination.currentPage <= 1 ? 'btn-disabled' : '' %>" href="<%= pagination.currentPage > 1 ? pageUrl(pagination.currentPage - 1) : '#' %>">← Prev</a>
+        <span class="pagination-status">Page <%= pagination.currentPage %> of <%= pagination.totalPages %></span>
+        <a class="btn btn-outline btn-sm <%= pagination.currentPage >= pagination.totalPages ? 'btn-disabled' : '' %>" href="<%= pagination.currentPage < pagination.totalPages ? pageUrl(pagination.currentPage + 1) : '#' %>">Next →</a>
+      </nav>
+      <% } %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,63 @@
+<%- include('partials/header', { active: 'products' }) %>
+
+<a href="<%= ADMIN_PATH %>/products" class="back-link">← Back to listings</a>
+
+<div class="product-detail admin-product-detail">
+  <div class="product-gallery">
+    <div class="product-detail-media">
+      <% if (product.discount_pct > 0) { %><span class="badge-discount badge-discount-lg">-<%= product.discount_pct %>%</span><% } %>
+      <img id="mainImage" src="<%= images[0] || 'https://placehold.co/500x500' %>" alt="<%= product.brand %> <%= product.model %>" />
+    </div>
+    <% if (images.length > 1) { %>
+      <div class="thumb-row">
+        <% images.forEach(function(img, i){ %>
+          <button type="button" class="thumb-btn <%= i === 0 ? 'active' : '' %>" data-img="<%= img %>">
+            <img src="<%= img %>" alt="" />
+          </button>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+  <div class="product-detail-info">
+    <span class="product-brand"><%= product.brand %></span>
+    <h1><%= product.brand %> <%= product.model %></h1>
+    <div class="product-price-row">
+      <span class="product-price product-price-lg"><%= product.price_dzd.toLocaleString('en-US') %> DA</span>
+      <% if (product.discount_pct > 0) { %><span class="muted small">(<%= product.discount_pct %>% off)</span><% } %>
+    </div>
+
+    <p>
+      <% if (product.admin_disabled) { %><span class="status-pill status-cancelled">Removed by admin</span>
+      <% } else if (product.is_sold) { %><span class="status-pill status-both">Sold</span>
+      <% } else if (!product.is_active) { %><span class="status-pill status-seller">Hidden by seller</span>
+      <% } else { %><span class="status-pill status-buyer">Live</span>
+      <% } %>
+      <span class="status-pill condition-<%= product.condition %>"><%= product.condition %></span>
+    </p>
+
+    <ul class="spec-list">
+      <% if (product.storage_gb) { %><li><strong>Storage:</strong> <%= product.storage_gb %> GB</li><% } %>
+      <% if (product.color) { %><li><strong>Color:</strong> <%= product.color %></li><% } %>
+      <li><strong>Quantity:</strong> <%= product.quantity %></li>
+      <li><strong>Listed:</strong> <%= product.created_at %></li>
+      <li><strong>Store:</strong> <%= product.store_name %></li>
+      <li><strong>Seller email:</strong> <%= product.seller_email %></li>
+      <li><strong>Contact phone:</strong> <%= product.contact_phone || product.store_phone || 'N/A' %></li>
+    </ul>
+
+    <p class="product-description"><%= product.description || 'No description provided.' %></p>
+
+    <form action="<%= ADMIN_PATH %>/products/<%= product.id %>/toggle" method="post" onsubmit="return confirm('<%= product.admin_disabled ? 'Restore' : 'Remove' %> this listing?');">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <button class="btn <%= product.admin_disabled ? 'btn-outline' : 'btn-primary' %>" type="submit" style="<%= product.admin_disabled ? '' : 'background:var(--red);' %>">
+        <%= product.admin_disabled ? 'Restore listing' : 'Remove listing' %>
+      </button>
+    </form>
+    <% if (!product.admin_disabled && !product.is_active) { %>
+      <p class="muted small" style="margin-top:10px;">Note: this listing is currently hidden by the seller too, so it won't be publicly visible even if you don't remove it.</p>
+    <% } %>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

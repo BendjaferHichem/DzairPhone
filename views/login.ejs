@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrowest">
+    <div class="auth-card reveal">
+      <h1><%= t('login_title') %></h1>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form action="/login" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label><%= t('login_email') %>
+          <input type="email" name="email" value="<%= email %>" required autofocus />
+        </label>
+        <label><%= t('login_password') %>
+          <input type="password" name="password" required />
+        </label>
+        <button class="btn btn-primary btn-block" type="submit"><%= t('login_button') %></button>
+      </form>
+      <p class="auth-switch"><%= t('login_switch') %> <a href="/register"><%= t('login_create_account') %></a></p>
+      <div class="guest-box">
+        <strong><%= t('guest_browse_title') %></strong>
+        <p class="muted small"><%= t('guest_browse_body') %></p>
+        <a class="btn btn-outline btn-block" href="/products"><%= t('guest_browse_button') %></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

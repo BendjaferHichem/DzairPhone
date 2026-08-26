@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>" dir="<%= dir %>">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> · DzairPhone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css" />
+  <script nonce="<%= cspNonce %>">
+    // Applied before paint so there's no flash of the wrong theme.
+    (function () {
+  var saved = localStorage.getItem('dzairphone-theme');
+  var theme = saved || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+})();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <a class="logo" href="/">Dzair<span>Phone</span></a>
+
+      <div class="categories-dd dd">
+        <button class="cat-btn dd-trigger" type="button" aria-haspopup="true"><%= t('nav_categories') %>
+          <svg width="10" height="6" viewBox="0 0 10 6"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+        </button>
+        <div class="cat-menu dd-menu">
+          <a href="/products?brand=Apple">Apple</a>
+          <a href="/products?brand=Samsung">Samsung</a>
+          <a href="/products?brand=Google">Google</a>
+          <a href="/products?brand=Xiaomi">Xiaomi</a>
+          <a href="/products?brand=OnePlus">OnePlus</a>
+          <a href="/products?condition=refurbished"><%= t('filter_refurbished') %></a>
+        </div>
+      </div>
+
+      <form class="search-form" action="/products" method="get">
+        <input type="text" name="q" placeholder="<%= t('nav_search_placeholder') %>" autocomplete="off" />
+        <button type="submit" aria-label="Search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </form>
+
+      <nav class="top-actions">
+        <div class="dd lang-dd">
+          <button class="icon-btn dd-trigger" type="button" aria-haspopup="true" title="Language">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span class="lang-code"><%= lang.toUpperCase() %></span>
+          </button>
+          <div class="cat-menu dd-menu lang-menu">
+            <form action="/lang/en" method="post"><button type="submit" class="lang-option <%= lang === 'en' ? 'active' : '' %>">English</button></form>
+            <form action="/lang/fr" method="post"><button type="submit" class="lang-option <%= lang === 'fr' ? 'active' : '' %>">Français</button></form>
+            <form action="/lang/ar" method="post"><button type="submit" class="lang-option <%= lang === 'ar' ? 'active' : '' %>">العربية</button></form>
+          </div>
+        </div>
+
+        <button class="icon-btn" id="themeToggle" type="button" title="Toggle dark mode" aria-label="Toggle dark mode">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2.2M12 19.8V22M4.2 4.2l1.5 1.5M18.3 18.3l1.5 1.5M2 12h2.2M19.8 12H22M4.2 19.8l1.5-1.5M18.3 5.7l1.5-1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </button>
+
+        <% if (user) { %>
+          <% if (user.role === 'seller' || user.role === 'both') { %>
+            <a class="top-link nav-desktop-only" href="/seller/dashboard"><%= t('nav_my_listings') %></a>
+          <% } %>
+          <div class="dd account-dd">
+            <button class="cat-btn dd-trigger" type="button"><%= t('nav_hi') %>, <%= user.name.split(' ')[0] %></button>
+            <div class="cat-menu dd-menu">
+              <% if (user.role === 'seller' || user.role === 'both') { %><a href="/seller/dashboard"><%= t('nav_my_listings') %></a><% } %>
+              <a href="/favorites">❤ Saved listings</a>
+              <% if (user.role === 'buyer') { %><a href="/become-seller"><%= t('nav_become_seller') %></a><% } %>
+              <form action="/logout" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <button class="cat-menu-logout" type="submit"><%= t('nav_logout') %></button>
+              </form>
+            </div>
+          </div>
+        <% } else { %>
+          <a class="top-link" href="/login"><%= t('nav_login') %></a>
+        <% } %>
+        <a class="btn btn-primary btn-sm nav-sell-btn" href="<%= user ? '/seller/dashboard' : '/become-seller' %>"><%= t('nav_sell') %></a>
+      </nav>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="/products"><%= t('browse_title') %></a>
+      <a href="<%= user ? '/seller/dashboard' : '/become-seller' %>"><%= t('nav_sell') %></a>
+      <% if (!user) { %><a href="/login"><%= t('nav_login') %></a><% } %>
+    </div>
+  </header>
+  <main>

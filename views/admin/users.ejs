@@ -1,0 +1,30 @@
+<%- include('partials/header', { active: 'users' }) %>
+
+<h1>Users</h1>
+<form class="filter-bar" method="get" action="<%= ADMIN_PATH %>/users">
+  <input type="text" name="q" placeholder="Search by name or email" value="<%= q %>" />
+  <button class="btn btn-primary" type="submit">Search</button>
+</form>
+
+<div class="table-list">
+  <% users.forEach(function(u){ %>
+    <div class="table-row admin-user-row">
+      <span><%= u.name %></span>
+      <span class="muted"><%= u.email %></span>
+      <span class="status-pill status-<%= u.role %>"><%= u.role %></span>
+      <span class="muted small"><%= u.created_at %></span>
+      <span><%= u.is_banned ? 'Banned' : 'Active' %></span>
+      <% if (u.role !== 'admin') { %>
+        <form action="<%= ADMIN_PATH %>/users/<%= u.id %>/<%= u.is_banned ? 'unban' : 'ban' %>" method="post" onsubmit="return confirm('<%= u.is_banned ? 'Unban' : 'Ban' %> <%= u.email %>?');">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <button class="<%= u.is_banned ? 'btn btn-outline btn-sm' : 'link-danger' %>" type="submit"><%= u.is_banned ? 'Unban' : 'Ban' %></button>
+        </form>
+      <% } else { %>
+        <span class="muted small">N/A</span>
+      <% } %>
+    </div>
+  <% }) %>
+  <% if (users.length === 0) { %><p class="muted">No users found.</p><% } %>
+</div>
+
+<%- include('partials/footer') %>

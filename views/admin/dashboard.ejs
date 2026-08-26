@@ -1,0 +1,41 @@
+<%- include('partials/header', { active: 'dashboard' }) %>
+
+<h1>Dashboard</h1>
+<div class="stat-cards">
+  <div class="stat-card"><span>Buyers</span><strong><%= stats.buyers %></strong></div>
+  <div class="stat-card"><span>Sellers</span><strong><%= stats.sellers %></strong></div>
+  <div class="stat-card"><span>Active listings</span><strong><%= stats.listings %></strong></div>
+  <div class="stat-card"><span>Active stores</span><strong><%= stats.stores %></strong></div>
+</div>
+
+<div class="admin-columns">
+  <div>
+    <h2>Recent listings</h2>
+    <div class="table-list">
+      <% recentListings.forEach(function(p){ %>
+        <div class="table-row admin-user-row">
+          <img class="row-thumb" src="<%= p.primary_image || 'https://placehold.co/80x80' %>" alt="" />
+          <span><%= p.brand %> <%= p.model %></span>
+          <span class="muted small"><%= p.store_name %></span>
+          <span class="muted small"><%= p.created_at %></span>
+        </div>
+      <% }) %>
+      <% if (recentListings.length === 0) { %><p class="muted">No listings yet.</p><% } %>
+    </div>
+  </div>
+  <div>
+    <h2>Admin activity log</h2>
+    <div class="table-list">
+      <% recentLog.forEach(function(l){ %>
+        <div class="table-row log-row">
+          <span class="muted small"><%= l.created_at %></span>
+          <span><%= l.action %></span>
+          <span class="muted small"><%= l.details %></span>
+        </div>
+      <% }) %>
+      <% if (recentLog.length === 0) { %><p class="muted">No admin actions logged yet.</p><% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

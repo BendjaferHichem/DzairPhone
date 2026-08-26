@@ -1,0 +1,25 @@
+<%- include('../partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrowest">
+    <div class="auth-card">
+      <h1>Store settings</h1>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form action="/seller/store" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label>Store name
+          <input type="text" name="name" value="<%= store.name %>" required />
+        </label>
+        <label>Default contact phone
+          <input type="tel" name="phone" value="<%= store.phone || '' %>" placeholder="0555 12 34 56" />
+        </label>
+        <label>Description
+          <textarea name="description" rows="4"><%= store.description %></textarea>
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">Save changes</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('../partials/footer') %>

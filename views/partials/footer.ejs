@@ -1,0 +1,26 @@
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <div class="logo">Dzair<span>Phone</span></div>
+        <p class="footer-note"><%= t('footer_tagline') %></p>
+      </div>
+      <div class="footer-col">
+        <h4><%= t('footer_shop') %></h4>
+        <a href="/products"><%= t('footer_browse_all') %></a>
+        <a href="/products?condition=refurbished"><%= t('footer_refurbished') %></a>
+      </div>
+      <div class="footer-col">
+        <h4><%= t('footer_sell') %></h4>
+        <a href="/become-seller"><%= t('footer_open_store') %></a>
+      </div>
+      <div class="footer-col">
+        <h4><%= t('footer_legal') %></h4>
+        <a href="/privacy"><%= t('footer_privacy') %></a>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; <%= new Date().getFullYear() %> DzairPhone</div>
+  </footer>
+  <script src="/js/main.js"></script>
+</body>
+</html>

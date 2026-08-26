@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrowest">
+    <div class="auth-card reveal">
+      <h1><%= t('register_title') %></h1>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form action="/register" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label><%= t('register_name') %>
+          <input type="text" name="name" value="<%= form.name || '' %>" required autofocus />
+        </label>
+        <label><%= t('register_email') %>
+          <input type="email" name="email" value="<%= form.email || '' %>" required />
+        </label>
+        <label><%= t('register_password') %>
+          <input type="password" name="password" minlength="8" required />
+          <span class="hint"><%= t('register_password_hint') %></span>
+        </label>
+        <label><%= t('register_confirm') %>
+          <input type="password" name="confirm_password" minlength="8" required />
+        </label>
+        <fieldset class="role-choice">
+          <legend><%= t('register_role_legend') %></legend>
+          <label class="radio-card">
+            <input type="radio" name="role" value="buyer" checked />
+            <span><strong><%= t('register_role_buy') %></strong><br /><span class="muted small"><%= t('register_role_buy_sub') %></span></span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="role" value="seller" />
+            <span><strong><%= t('register_role_sell') %></strong><br /><span class="muted small"><%= t('register_role_sell_sub') %></span></span>
+          </label>
+          <label class="radio-card">
+            <input type="radio" name="role" value="both" />
+            <span><strong><%= t('register_role_both') %></strong><br /><span class="muted small"><%= t('register_role_both_sub') %></span></span>
+          </label>
+        </fieldset>
+        <button class="btn btn-primary btn-block" type="submit"><%= t('register_button') %></button>
+      </form>
+      <p class="auth-switch"><%= t('register_switch') %> <a href="/login"><%= t('register_login') %></a></p>
+
+      <div class="guest-box">
+        <strong><%= t('guest_browse_title') %></strong>
+        <p class="muted small"><%= t('guest_browse_body') %></p>
+        <a class="btn btn-outline btn-block" href="/products"><%= t('guest_browse_button') %></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

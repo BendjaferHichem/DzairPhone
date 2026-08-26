@@ -1,0 +1,82 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="product-detail">
+      <div class="product-gallery">
+        <div class="product-detail-media">
+          <% if (product.discount_pct > 0) { %><span class="badge-discount badge-discount-lg">-<%= product.discount_pct %>%</span><% } %>
+          <img id="mainImage" src="<%= images[0] %>" alt="<%= product.brand %> <%= product.model %>" />
+        </div>
+        <% if (images.length > 1) { %>
+          <div class="thumb-row">
+            <% images.forEach(function(img, i){ %>
+              <button type="button" class="thumb-btn <%= i === 0 ? 'active' : '' %>" data-img="<%= img %>">
+                <img src="<%= img %>" alt="" />
+              </button>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="product-detail-info">
+        <div class="product-title-row">
+          <div>
+            <span class="product-brand"><%= product.brand %></span>
+            <h1><%= product.model %></h1>
+          </div>
+          <% if (typeof user !== 'undefined' && user) { %>
+            <form action="/favorites/<%= product.id %>/toggle" method="post">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <button type="submit" class="favorite-btn favorite-btn-lg <%= product.is_favorited ? 'active' : '' %>" title="<%= product.is_favorited ? 'Remove from saved' : 'Save this listing' %>" aria-label="Save">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="<%= product.is_favorited ? 'currentColor' : 'none' %>"><path d="M12 20.5s-7.5-4.6-10-9.3C0.3 7.8 2 4 5.6 4c2.1 0 3.6 1.2 4.4 2.4.8-1.2 2.3-2.4 4.4-2.4 3.6 0 5.3 3.8 3.6 7.2-2.5 4.7-10 9.3-10 9.3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </button>
+            </form>
+          <% } %>
+        </div>
+        <div class="product-price-row">
+          <span class="product-price product-price-lg"><%= product.final_price_fmt %> DA</span>
+          <% if (product.discount_pct > 0) { %><span class="product-price-old"><%= product.price_fmt %> DA</span><% } %>
+        </div>
+        <span class="product-condition condition-<%= product.condition %>"><%= t('condition_' + product.condition) %></span>
+
+        <ul class="spec-list">
+          <% if (product.storage_gb) { %><li><strong><%= t('storage') %>:</strong> <%= product.storage_gb %> GB</li><% } %>
+          <% if (product.color) { %><li><strong><%= t('color') %>:</strong> <%= product.color %></li><% } %>
+          <li><strong><%= t('sold_by') %>:</strong> <a href="/products?store=<%= product.store_id %>"><%= product.store_name %></a></li>
+        </ul>
+
+        <div class="seller-trust">
+          <span>🗓️ Member since <%= new Date(product.store_created_at.replace(' ', 'T') + 'Z').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }) %></span>
+          <span>📦 <%= sellerListingCount %> other active listing<%= sellerListingCount === 1 ? '' : 's' %></span>
+        </div>
+
+        <p class="product-description"><%= product.description || '' %></p>
+
+        <div class="contact-card">
+          <h2><%= t('contact_seller') %></h2>
+          <% if (contactPhone) { %>
+            <div class="contact-actions">
+              <a class="btn btn-primary btn-block" href="tel:<%= contactPhone.replace(/\s+/g,'') %>">📞 <%= t('call_now') %>, <%= contactPhone %></a>
+              <a class="btn btn-whatsapp btn-block" href="https://wa.me/<%= contactWhatsApp %>?text=<%= encodeURIComponent('Bonjour, je suis intéressé(e) par votre ' + product.brand + ' ' + product.model + ' sur DzairPhone.') %>" target="_blank" rel="noopener">💬 <%= t('whatsapp') %></a>
+            </div>
+          <% } else { %>
+            <p class="muted small">No contact number was provided for this listing.</p>
+          <% } %>
+          <p class="muted small guest-note"><%= t('guest_note') %></p>
+        </div>
+      </div>
+    </div>
+
+    <% if (related.length) { %>
+      <div class="section-head reveal" style="margin-top:3rem;">
+        <h2><%= t('more_from_brand') %> <%= product.brand %></h2>
+      </div>
+      <div class="product-grid">
+        <% related.forEach(function(p){ %><%- include('partials/product-card', { p }) %><% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

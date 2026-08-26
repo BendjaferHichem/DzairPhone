@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="section-inner narrowest">
+    <div class="auth-card reveal">
+      <h1>Open your store</h1>
+      <p class="muted">This lets you list phones for sale. You'll keep the ability to browse and contact other sellers too.</p>
+      <% if (error) { %><div class="alert alert-error"><%= error %></div><% } %>
+      <form action="/become-seller" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label>Store / seller name
+          <input type="text" name="store_name" required autofocus placeholder="e.g. your name or shop name" />
+        </label>
+        <label>Default contact phone <span class="muted small">(optional, you can also set one per listing)</span>
+          <input type="tel" name="store_phone" placeholder="0555 12 34 56" />
+        </label>
+        <label>Description <span class="muted small">(optional)</span>
+          <textarea name="store_description" rows="3" placeholder="Tell buyers a bit about yourself or your shop..."></textarea>
+        </label>
+        <button class="btn btn-primary btn-block" type="submit">Open my store</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
